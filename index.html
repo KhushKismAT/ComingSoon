@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eee5d2">
+<title>#khushkismat — Akshat & Khushi</title>
+<style>
+:root{--paper:#eee5d2;--paper2:#f7f1e6;--ink:#4f4036;--muted:#8b7969;--rose:#b8797d;--sage:#81896f;--ochre:#b89a68;--rule:#d1c2aa;--serif:Georgia,"Times New Roman",serif;--sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}button,a{font:inherit}button{cursor:pointer}img,video{display:block;max-width:100%}
+.screen{position:fixed;inset:0;display:none;overflow:hidden}.screen.active{display:flex}
+#splash{align-items:center;justify-content:center;text-align:center;background:#30271f}
+#splash video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .6s ease}
+#splash.video-ready video{opacity:.8}#splash:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#17120c55,#17120c20 35%,#17120c66)}
+.splash-content{position:relative;z-index:1;color:#fff8e9;padding:28px 24px;width:min(100%,520px);text-shadow:0 2px 20px #241a12a6}
+.splash-hash{font:italic clamp(40px,10vw,66px)/1 var(--serif);letter-spacing:.015em}
+.splash-date{font-size:10px;letter-spacing:.27em;text-transform:uppercase;margin-top:18px;color:#f1e4d1}
+.countdown{font:normal clamp(24px,6vw,34px) var(--serif);margin:35px 0 29px;min-height:38px;font-variant-numeric:tabular-nums;letter-spacing:.05em}
+.enter-btn{border:1px solid #f4e8d2bd;background:#f5eadb16;color:#fff8e9;padding:14px 36px;letter-spacing:.22em;text-transform:uppercase;font-size:10px;backdrop-filter:blur(8px);transition:.25s}
+.enter-btn:active{transform:scale(.97);background:#fff3}
+.splash-hint{font-size:9px;letter-spacing:.16em;text-transform:uppercase;margin-top:20px;color:#f0e4d1bd}
+#countFlash{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:#eee5d2;opacity:0;visibility:hidden;pointer-events:none}
+#countFlash.show{animation:flashReveal 2.5s ease both}
+.flash-word{font:italic clamp(32px,9vw,54px) var(--serif);color:var(--ink);text-align:center;padding:25px}
+@keyframes flashReveal{0%{opacity:0;visibility:visible;transform:scale(1.04)}12%,75%{opacity:1;visibility:visible;transform:scale(1)}100%{opacity:0;visibility:hidden;transform:scale(.98)}}
+#selector{align-items:center;justify-content:center;background:var(--paper);padding:25px 18px}
+.selector-inner{width:min(100%,650px);text-align:center}
+.selector-title{font:italic clamp(27px,7vw,40px) var(--serif);margin:0 0 8px}
+.selector-sub{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0 0 24px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.side-card{border:1px solid var(--rule);background:rgba(249,244,234,.72);padding:0 0 14px;min-width:0;color:var(--ink);transition:transform .25s,border-color .25s,box-shadow .25s;overflow:hidden}
+.side-card:active{transform:scale(.98)}
+.side-card img{width:100%;aspect-ratio:1/1;object-fit:contain;object-position:center bottom;background:transparent;padding:4px 4px 0}
+.side-card .side-name{font:normal clamp(17px,4.8vw,23px) var(--serif);margin:4px 0 3px}
+.side-card .side-order{font-size:9px;color:var(--muted);letter-spacing:.04em}
+.selector-foot{font:italic 13px var(--serif);color:var(--muted);margin:22px 0 0}
+#transition{z-index:60;display:none;align-items:center;justify-content:center;background:#eee5d2;overflow:hidden}
+#transition.run{display:flex}
+.light-leak{position:absolute;inset:-30%;background:conic-gradient(from 0deg at 50% 50%,transparent 0 18%,#fff8d455 22%,#dcae7c66 27%,transparent 33% 54%,#fff5d966 60%,transparent 67%);filter:blur(26px);opacity:0;transform:scale(.4) rotate(-30deg)}
+#transition.run .light-leak{animation:leak 1.45s cubic-bezier(.2,.8,.2,1) both}
+.transition-word{font:italic clamp(34px,9vw,58px) var(--serif);opacity:0;position:relative;z-index:1}
+#transition.run .transition-word{animation:wordIn 1.35s ease both}
+@keyframes leak{0%{opacity:0;transform:scale(.35) rotate(-40deg)}35%{opacity:1}100%{opacity:0;transform:scale(1.5) rotate(35deg)}}
+@keyframes wordIn{0%{opacity:0;letter-spacing:.2em;filter:blur(8px);transform:scale(.92)}35%,75%{opacity:1;letter-spacing:0;filter:blur(0);transform:scale(1)}100%{opacity:0;transform:scale(1.04)}}
+#invitation{background:var(--paper);display:none;flex-direction:column}
+#invitation.active{display:flex}
+.inv-top{flex:1;min-height:0;position:relative;overflow:hidden}
+.panel{position:absolute;inset:0;display:none;overflow:hidden;padding:calc(20px + env(safe-area-inset-top)) 23px 15px;animation:panelIn .45s ease both}
+.panel.active{display:flex;flex-direction:column}
+@keyframes panelIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.panel-inner{width:min(100%,610px);margin:auto;min-height:0;max-height:100%;display:flex;flex-direction:column;justify-content:center}
+.panel-kicker{text-align:center;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--rose);margin-bottom:9px}
+.panel-title{text-align:center;font:normal clamp(29px,7vw,42px)/1.08 var(--serif);font-weight:400;margin:0 0 10px}
+.panel-sub{text-align:center;font:italic 14px/1.45 var(--serif);color:var(--muted);margin:0 auto 18px;max-width:370px}
+.ornament{display:block;width:min(210px,60%);height:20px;margin:2px auto 16px}
+.details-content{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;text-align:center;margin:8px auto 0;width:100%;max-width:500px}
+.family-block{padding:10px 4px;border-top:1px solid var(--rule)}
+.family-label{font-size:8px;letter-spacing:.19em;text-transform:uppercase;color:var(--sage);margin-bottom:7px}
+.person{font:normal 16px/1.35 var(--serif);margin:3px 0}
+.grandparents{font:italic 11px/1.45 var(--serif);color:var(--muted);margin-top:7px}
+.couple-names{font:normal clamp(27px,7vw,39px)/1.1 var(--serif);text-align:center;margin:10px 0 3px}
+.couple-amp{font:italic 16px var(--serif);color:var(--rose);text-align:center}
+.details-dates{display:flex;justify-content:center;gap:25px;text-align:center;margin:15px auto 0}
+.details-dates b{font:normal 25px var(--serif);display:block}
+.details-dates span{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.memory-row{display:flex;gap:7px;overflow:hidden;margin:14px auto 0;width:100%;max-width:480px}
+.memory-row img{width:calc((100% - 14px)/3);height:clamp(62px,12vh,105px);object-fit:cover}
+.events-wrap{width:100%;max-width:530px;margin:0 auto}
+.day-tabs{display:flex;justify-content:center;gap:8px;margin:0 auto 10px}
+.day-tab{border:1px solid var(--rule);background:transparent;padding:7px 14px;color:var(--muted);font-size:9px;letter-spacing:.08em}
+.day-tab.active{background:var(--ink);color:var(--paper2);border-color:var(--ink)}
+.event-list{display:none}.event-list.active{display:block}
+.event-row{display:grid;grid-template-columns:72px 1fr;gap:9px;align-items:start;padding:8px 0;border-bottom:1px solid #d8cbb7}
+.event-time{font:italic 13px/1.25 var(--serif);color:var(--terracotta,var(--rose));}
+.event-name{font:normal 18px/1.12 var(--serif)}
+.event-note{font-size:9px;line-height:1.35;color:var(--muted);margin-top:3px}
+.day-note{text-align:center;font:italic 11px var(--serif);color:var(--muted);margin:10px 0 0}
+.dress-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;width:100%;max-width:520px;margin:6px auto 0}
+.dress-item{padding:10px 0;border-top:1px solid var(--rule)}
+.swatches{display:flex;gap:5px;margin-bottom:8px}
+.swatch{width:22px;height:22px;border-radius:50%;border:1px solid #76675a2b}
+.dress-title{font:normal 18px var(--serif);margin-bottom:3px}
+.dress-copy{font-size:9px;line-height:1.45;color:var(--muted)}
+.dress-item.wide{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center}
+.dress-quote{font:italic 13px/1.4 var(--serif);color:var(--soft-ink)}
+.venue-art{width:100%;max-width:390px;height:clamp(100px,22vh,180px);margin:4px auto 8px}
+.venue-name{text-align:center;font:normal 22px var(--serif);margin:6px 0}
+.venue-address{text-align:center;font:italic 14px var(--serif);color:var(--muted);line-height:1.5;margin:4px 0 13px}
+.map-btn{display:block;width:max-content;margin:0 auto;border:1px solid var(--sage);color:var(--sage);text-decoration:none;padding:10px 19px;font-size:9px;letter-spacing:.16em;text-transform:uppercase}
+
+.calendar-link{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:5px 9px;border:1px solid #c6b69e;color:#866b55;text-decoration:none;font-size:8px;letter-spacing:.1em;text-transform:uppercase;border-radius:2px}
+.calendar-link:active{background:#e4d7c2}
+.brush-swatches{display:flex;align-items:center;gap:4px;margin:0 0 8px;min-height:34px}
+.brush-swatch{height:28px;display:block;filter:drop-shadow(0 1px 0 #7c6a5520)}
+.venue-gallery{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:clamp(75px,15vh,112px) clamp(62px,12vh,90px);gap:7px;width:100%;max-width:450px;margin:8px auto 12px}
+.venue-gallery img{width:100%;height:100%;object-fit:cover;border:1px solid #d2c2a9}
+.venue-gallery img:first-child{grid-row:1/3}
+.venue-credit{text-align:center;font-size:8px;letter-spacing:.08em;color:#9b8978;margin:-5px 0 10px}
+.rsvp-intro{text-align:center;font:italic 16px/1.5 var(--serif);color:var(--muted);max-width:350px;margin:0 auto 20px}
+.rsvp-card{text-align:center;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:18px 8px;margin:0 auto;width:min(100%,380px)}
+.rsvp-person{font:normal 22px var(--serif)}
+.rsvp-side{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:7px 0 15px}
+.whatsapp{display:inline-block;text-decoration:none;background:var(--sage);color:#fffaf1;padding:12px 22px;font-size:9px;letter-spacing:.15em;text-transform:uppercase}
+.bottom-nav{flex:0 0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:10px 7px calc(10px + env(safe-area-inset-bottom));background:#f7f0e4;border-top:1px solid #c9b99f;box-shadow:0 -8px 25px #59483d12;gap:3px}.nav-btn{border-radius:9px;padding:7px 2px 6px;transition:background .2s,color .2s}.nav-btn.active{background:#e8ddca;color:#8f5e58}.nav-btn.active:before{top:-10px;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px}.nav-btn svg{width:26px;height:24px;margin-bottom:5px}.nav-btn span{font-size:9px;font-weight:650;letter-spacing:.08em}
+.nav-btn{border:0;background:transparent;color:var(--muted);padding:5px 1px 3px;min-width:0;position:relative}
+.nav-btn svg{display:block;width:25px;height:23px;margin:0 auto 3px;stroke:currentColor;fill:none;stroke-width:1.2}
+.nav-btn span{display:block;font-size:8px;letter-spacing:.07em;text-transform:uppercase}
+.nav-btn.active{color:var(--terracotta,var(--rose))}
+.nav-btn.active:before{content:"";position:absolute;top:-8px;left:25%;right:25%;height:2px;background:var(--rose)}
+.audio-toggle{position:absolute;top:calc(10px + env(safe-area-inset-top));right:13px;z-index:5;border:1px solid #cfc1aa;background:#eee5d2cc;color:var(--muted);width:34px;height:34px;border-radius:50%;font-size:14px}
+@media(max-height:680px){.panel{padding-top:10px;padding-bottom:8px}.panel-title{font-size:27px;margin-bottom:6px}.panel-sub{margin-bottom:9px}.details-content{gap:5px 12px}.family-block{padding:6px 2px}.person{font-size:14px}.grandparents{font-size:10px}.memory-row{margin-top:8px}.event-row{padding:5px 0}.event-name{font-size:16px}.dress-grid{gap:6px 14px}.dress-item{padding:6px 0}.venue-art{height:100px}}
+@media(max-width:360px){.panel{padding-left:16px;padding-right:16px}.details-content{gap:6px 10px}.person{font-size:14px}.grandparents{font-size:10px}.event-row{grid-template-columns:62px 1fr}.event-name{font-size:16px}.dress-title{font-size:16px}.dress-copy{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<section id="splash" class="screen active">
+  <video autoplay muted loop playsinline >
+    <source src="https://res.cloudinary.com/dstoe6rmq/video/upload/v1793428551/gemini_generated_video_3d006983_dtf1yp.mp4" type="video/mp4">
+  </video>
+  <div class="splash-content">
+    <div class="splash-hash">#khushkismat</div>
+    <div class="countdown" id="countdown">00 : 00 : 00 : 00</div>
+    <button class="enter-btn" onclick="beginInvitation()">Enter</button>
+  </div>
+</section>
+<div id="countFlash"><div class="flash-word" id="flashWord"></div></div>
+
+<section id="selector" class="screen">
+  <div class="selector-inner">
+    <div class="selector-title">And where do you belong?</div>
+    <div class="selector-sub">Choose your side of the celebration</div>
+    <div class="choices">
+      <button class="side-card" onclick="chooseSide('groom')">
+        <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794554951/LAdke_Wale_wuizdd.png" alt="Raja folk-art illustration">
+        <div class="side-name">Ladke Waale</div><div class="side-order">Akshat & Khushi</div>
+      </button>
+      <button class="side-card" onclick="chooseSide('bride')">
+        <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794554951/LAdki_Wale_tcfbrv.png" alt="Raani folk-art illustration">
+        <div class="side-name">Ladki Waale</div><div class="side-order">Khushi & Akshat</div>
+      </button>
+    </div>
+    <p class="selector-foot">One celebration. Two family perspectives.</p>
+  </div>
+</section>
+
+<section id="transition" class="screen"><div class="light-leak"></div><div class="transition-word">A little world of love…</div></section>
+
+<section id="invitation" class="screen">
+  <button class="audio-toggle" id="audioToggle" aria-label="Toggle music" onclick="toggleMusic()">♫</button>
+  <div class="inv-top">
+    <section class="panel active" data-panel="details">
+      <div class="panel-inner">
+        <div class="panel-kicker">The families · The beginning</div>
+        <h1 class="panel-title">A celebration of two families</h1>
+        <div class="couple-names" id="detailNames">Akshat Bajla</div><div class="couple-amp">and</div><div class="couple-names" id="detailBride">Khushi Agarwal</div>
+        <svg class="ornament" viewBox="0 0 220 20" fill="none"><path d="M0 10h75m70 0h75" stroke="#d1c2aa"/><path d="M110 1c-13 8-13 10 0 18 13-8 13-10 0-18Z" fill="#b8797d"/><path d="M110 4v12" stroke="#eee5d2"/></svg>
+        <div class="details-content">
+          <div class="family-block"><div class="family-label">The Groom</div><div class="person">Akshat Bajla</div><div class="grandparents">S/o Mrs. Suman & Mr. Amit Bajla</div><div class="grandparents">Grandson of Late Smt. Sumitra Devi Bajla<br>& Shri Shyam Sundar Bajla</div></div>
+          <div class="family-block"><div class="family-label">The Bride</div><div class="person">Khushi Agarwal</div><div class="grandparents">D/o Mrs. Rekha & Mr. Nawal Kishor Agarwal</div><div class="grandparents">Granddaughter of Late Smt. Anandi Devi Agarwal<br>& Late Shri Atmaramji Agarwal</div></div>
+        </div>
+        <div class="details-dates"><div><b>28</b><span>Thursday · Jan 2027</span></div><div><b>29</b><span>Friday · Jan 2027</span></div></div>
+        <div class="memory-row">
+          <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264327/DSC00679_qwgwq3.jpg" alt="Roka memory">
+          <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264326/DSC00622_bf4xg2.jpg" alt="Roka memory">
+          <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264326/DSC00449_h6ptxq.jpg" alt="Roka ceremony">
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="events">
+      <div class="panel-inner">
+        <div class="panel-kicker">The celebrations</div><h2 class="panel-title">The wedding itinerary</h2>
+        <p class="panel-sub">Two days of rituals, laughter, music and memories.</p>
+        <div class="events-wrap">
+          <div class="day-tabs"><button class="day-tab active" onclick="showDay(1,this)">Thursday · 28 Jan</button><button class="day-tab" onclick="showDay(2,this)">Friday · 29 Jan</button></div>
+          <div class="event-list active" id="day1">
+            <div class="event-row"><div class="event-time">10:30 AM<br>onwards</div><div><div class="event-name">Welcome & Check-in</div><div class="event-note">Arrive, settle in and ease into the celebrations.</div><a class="calendar-link" data-cal="welcome" href="#" target="_blank" rel="noopener">＋ Add to Google Calendar</a></div></div>
+            <div class="event-row"><div class="event-time">1:00 PM</div><div><div class="event-name">Haldi Carnival</div><div class="event-note">A sunny afternoon of colour and laughter.</div><a class="calendar-link" data-cal="haldi" href="#" target="_blank" rel="noopener">＋ Add to Google Calendar</a></div></div>
+            <div class="event-row"><div class="event-time">6:30 PM</div><div><div class="event-name">Sangeet</div><div class="event-note">An evening of music, moves and performances.</div><a class="calendar-link" data-cal="sangeet" href="#" target="_blank" rel="noopener">＋ Add to Google Calendar</a></div></div>
+            <div class="event-row"><div class="event-time">11:30 PM</div><div><div class="event-name">After Party</div><div class="event-note">The night is still young. Let’s dance!</div><a class="calendar-link" data-cal="after" href="#" target="_blank" rel="noopener">＋ Add to Google Calendar</a></div></div>
+          </div>
+          <div class="event-list" id="day2">
+            <div class="event-row"><div class="event-time">9:00 AM</div><div><div class="event-name">Mayra</div><div class="event-note">Family, blessings and Marwari traditions.</div><a class="calendar-link" data-cal="mayra" href="#" target="_blank" rel="noopener">＋ Add to Google Calendar</a></div></div>
+            <div class="event-row"><div class="event-time">Wedding day</div><div><div class="event-name">The Grand Wedding</div><div class="event-note">Baraat & Korath · Varmala · Reception · Pheras</div><a class="calendar-link" data-cal="wedding" href="#" target="_blank" rel="noopener">＋ Add to Google Calendar</a></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="dress">
+      <div class="panel-inner">
+        <div class="panel-kicker">A little style guide</div><h2 class="panel-title">Dress for the memories</h2>
+        <p class="panel-sub">A palette for each celebration. Bring your own festive flair.</p>
+        <div class="dress-grid">
+          <div class="dress-item"><div class="brush-swatches"><svg class="brush-swatch" style="width:144px" viewBox="0 0 146 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#eee5d2"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#e7d28e"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#d8b58c"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">Welcome</div><div class="dress-copy">Comfortables & Casuals<br>Your favourite airport look. Relax, refresh and settle in.</div></div>
+          <div class="dress-item"><div class="brush-swatches"><svg class="brush-swatch" style="width:144px" viewBox="0 0 146 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#eee5d2"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#e5ce83"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#c7a35e"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">Haldi Carnival</div><div class="dress-copy">Ivory / Butter Yellow<br>Breezy floral resort wear.</div></div>
+          <div class="dress-item"><div class="brush-swatches"><svg class="brush-swatch" style="width:144px" viewBox="0 0 146 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#b8797d"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#c6a0a2"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#b79a78"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">Sangeet</div><div class="dress-copy">Glitz & Glam<br>Indo-Western / Cocktail Formals.</div></div>
+          <div class="dress-item"><div class="brush-swatches"><svg class="brush-swatch" style="width:144px" viewBox="0 0 146 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#d59ba9"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#8e6d91"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#a85f76"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">Mayra</div><div class="dress-copy">Pink / Purple<br>Vibrant Rajasthani / Marwari traditional. Bandhani & Leheriya.</div></div>
+          <div class="dress-item wide"><div><div class="brush-swatches"><svg class="brush-swatch" style="width:192px" viewBox="0 0 194 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#a88c68"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#7d8066"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#9c5f59"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M146 19 Q151 4 165 8 Q182 5 187 13 Q178 23 154 24 Q145 25 146 19Z" fill="#d0b58c"/><path d="M151 17 Q163 11 181 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">The Grand Wedding</div><div class="dress-copy">Royal & Regal · Royal Traditional / Regal Ethnic</div></div><div class="dress-quote">“Bring out your finest traditional attire. Let the day feel as grand as the occasion.”</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="venue">
+      <div class="panel-inner">
+        <div class="panel-kicker">A little getaway</div><h2 class="panel-title">Meet us in Kolaghat</h2>
+        <p class="panel-sub">A place for two families to come together.</p>
+        <div class="venue-gallery" aria-label="Hotel Sonar Bangla venue photographs">
+          <img src="https://assets.simplotel.com/simplotel/image/upload/x_461%2Cy_0%2Cw_3110%2Ch_2268%2Cr_0%2Cc_crop/q_80%2Cw_1600%2Cdpr_1%2Cf_auto%2Cfl_progressive%2Cc_limit/hotel-sonar-bangla-kolaghat/Hotel_Sonar_Bangla_Kolaghat_pool_4" alt="Hotel Sonar Bangla infinity pool and riverside grounds" loading="lazy">
+          <img src="https://assets.simplotel.com/simplotel/image/upload/w_5000%2Ch_2812/x_2%2Cy_0%2Cw_4996%2Ch_2812%2Cr_0%2Cc_crop/q_80%2Cw_1600%2Cdpr_1%2Cf_auto%2Cfl_progressive%2Cc_limit/hotel-sonar-bangla-kolaghat/Facade_of_Sonar_Bangla%2C_Kolaghat" alt="Hotel Sonar Bangla exterior" loading="lazy">
+          <img src="https://assets.simplotel.com/simplotel/image/upload/x_1%2Cy_0%2Cw_4030%2Ch_2268%2Cr_0%2Cc_crop/q_80%2Cw_1600%2Cdpr_1%2Cf_auto%2Cfl_progressive%2Cc_limit/hotel-sonar-bangla-kolaghat/Facade_of_Hotel_Sonar_Bangla%2C_Kolaghat_1" alt="Hotel Sonar Bangla entrance" loading="lazy">
+        </div>
+        <div class="venue-credit">PHOTOGRAPHS · HOTEL SONAR BANGLA OFFICIAL GALLERY</div>
+        <svg class="venue-art" viewBox="0 0 390 160" fill="none" aria-label="Folk-art landscape">
+          <path d="M0 130Q90 102 190 126T390 119" stroke="#bba98e" stroke-width="2"/><path d="M0 142Q90 114 190 138T390 131" stroke="#bba98e"/>
+          <path d="M190 124V44m0 34-38-26m38 8 38-30" stroke="#96755f" stroke-width="3"/>
+          <g fill="#aeb19a" stroke="#81896f"><path d="M190 45c-19-14-17-29 0-34 17 8 16 23 0 34Zm-33 9c-19-3-24-17-12-27 17 1 22 12 12 27Zm64-24c-1-17 11-26 24-17 1 15-9 23-24 17Z"/></g>
+          <path d="M65 127c5-22 22-32 40-24 14 6 17 19 13 29H67Z" fill="#b99b82" stroke="#876d59"/><path d="M112 110c14-8 21 0 17 11-2 5-7 8-12 11" stroke="#876d59" stroke-width="5" stroke-linecap="round"/>
+          <g fill="#b8797d"><circle cx="28" cy="126" r="4"/><circle cx="37" cy="119" r="4"/><circle cx="46" cy="126" r="4"/><circle cx="300" cy="126" r="4"/><circle cx="309" cy="119" r="4"/><circle cx="318" cy="126" r="4"/></g>
+        </svg>
+        <div class="venue-name">Hotel Sonar Bangla</div>
+        <div class="venue-address">Kolaghat, West Bengal<br>28–29 January 2027</div>
+        <a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=Hotel+Sonar+Bangla+Kolaghat" target="_blank" rel="noopener">Open map directions ↗</a>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="rsvp">
+      <div class="panel-inner">
+        <div class="panel-kicker">A little note back</div><h2 class="panel-title">Will you be there?</h2>
+        <p class="rsvp-intro">Your presence will make our celebrations even more special. Please let our family know you're joining us.</p>
+        <div class="rsvp-card">
+          <div class="rsvp-person" id="rsvpName">Amit Bajla / Shyam Sundar Bajla</div>
+          <div class="rsvp-side" id="rsvpSide">Groom's family · RSVP</div>
+          <a class="whatsapp" id="rsvpLink" href="https://wa.me/919434054103" target="_blank" rel="noopener">WhatsApp RSVP ↗</a>
+          <div style="margin-top:12px;font-size:10px;color:var(--muted)">Call: <a id="rsvpPhone" href="tel:+919434054103" style="color:inherit;text-decoration:none">+91 94340 54103</a></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Invitation sections">
+    <button class="nav-btn active" data-target="details" onclick="showPanel('details',this)"><svg viewBox="0 0 24 24"><path d="M12 2 14 9l7 3-7 3-2 7-2-7-7-3 7-3 2-7Z"/></svg><span>Details</span></button>
+    <button class="nav-btn" data-target="events" onclick="showPanel('events',this)"><svg viewBox="0 0 24 24"><path d="M12 21V11m0 0C4 11 4 4 4 4s8-1 8 7Zm0 2c8 0 8-7 8-7s-8-1-8 7Z"/></svg><span>Events</span></button>
+    <button class="nav-btn" data-target="dress" onclick="showPanel('dress',this)"><svg viewBox="0 0 24 24"><path d="M8 4 12 2l4 2 4 5-4 2-1-2v12H9V9l-1 2-4-2 4-5Z"/></svg><span>Dress code</span></button>
+    <button class="nav-btn" data-target="venue" onclick="showPanel('venue',this)"><svg viewBox="0 0 24 24"><path d="M12 22s7-7 7-13a7 7 0 1 0-14 0c0 6 7 13 7 13Z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Venue</span></button>
+    <button class="nav-btn" data-target="rsvp" onclick="showPanel('rsvp',this)"><svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 11-8.8 11s-8.8-6-8.8-11A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 8.8 2.8Z"/></svg><span>RSVP</span></button>
+  </nav>
+</section>
+
+<audio id="bgMusic" src="./BG.mp3" preload="auto" loop></audio>
+<script>
+const WEDDING_DATE=new Date(2027,0,28,0,0,0);
+const SIDE={
+ groom:{names:"Akshat & Khushi",rsvp:"Amit Bajla / Shyam Sundar Bajla",role:"Groom's family · RSVP",phone:"919434054103"},
+ bride:{names:"Khushi & Akshat",rsvp:"Nawal Kishor Agarwal",role:"Bride's family · RSVP",phone:"919830188330"}
+};
+let selectedSide="groom",activePanel="details",musicOn=false;
+function countdownParts(){
+ const total=Math.max(0,Math.floor((WEDDING_DATE.getTime()-Date.now())/1000));
+ return {days:Math.floor(total/86400),hours:Math.floor((total%86400)/3600),minutes:Math.floor((total%3600)/60),seconds:total%60};
+}
+function updateCountdown(){
+ const p=countdownParts();
+ document.getElementById("countdown").textContent=
+  String(p.days).padStart(2,"0")+" : "+String(p.hours).padStart(2,"0")+" : "+String(p.minutes).padStart(2,"0")+" : "+String(p.seconds).padStart(2,"0");
+}
+function milestoneText(){
+ const d=countdownParts().days;
+ if(d===0)return "The celebrations begin today";
+ if(d===1)return "1 day to go";
+ if(d<7)return d+" days to go";
+ if(d<14)return "1 week to go";
+ if(d<30)return d+" days to go";
+ if(d<60)return "1 month to go";
+ if(d<90)return "2 months to go";
+ return d+" days to go";
+}
+function beginInvitation(){
+ updateCountdown();
+ const flash=document.getElementById("countFlash");
+ document.getElementById("flashWord").textContent=milestoneText();
+ flash.classList.remove("show");void flash.offsetWidth;flash.classList.add("show");
+ setTimeout(()=>{document.getElementById("splash").classList.remove("active");document.getElementById("selector").classList.add("active");},2550);
+}
+function chooseSide(side){
+ selectedSide=side;
+ const d=SIDE[side];
+ updateCalendarLinks();
+ document.getElementById("detailNames").textContent=side==="groom"?"Akshat Bajla":"Khushi Agarwal";
+ document.getElementById("detailBride").textContent=side==="groom"?"Khushi Agarwal":"Akshat Bajla";
+ document.getElementById("rsvpName").textContent=d.rsvp;
+ document.getElementById("rsvpPhone").textContent=side==="groom"?"+91 94340 54103":"+91 98301 88330";
+ document.getElementById("rsvpPhone").href="tel:+"+d.phone;
+ document.getElementById("rsvpSide").textContent=d.role;
+ document.getElementById("rsvpLink").href="https://wa.me/"+d.phone+"?text="+encodeURIComponent("Hello! We would love to RSVP for "+d.names+"'s wedding celebrations.");
+ document.getElementById("selector").classList.remove("active");
+ const tr=document.getElementById("transition");tr.classList.add("run");
+ const audio=document.getElementById("bgMusic");
+ audio.volume=.38;audio.play().then(()=>{musicOn=true;document.getElementById("audioToggle").textContent="♫";}).catch(()=>{});
+ setTimeout(()=>{tr.classList.remove("run");document.getElementById("invitation").classList.add("active");showPanel("details",document.querySelector('.nav-btn[data-target="details"]'));},1350);
+}
+function calendarUrl(title,date,start,end,allDay=false){
+ const endDate=title.includes("After Party")?"20270129":date;
+ const dates=allDay?date+"/"+end:(date+"T"+start+"/"+endDate+"T"+end);
+ return "https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(title)+"&dates="+dates+"&details="+encodeURIComponent("Wedding celebrations of Akshat and Khushi.")+"&location="+encodeURIComponent("Hotel Sonar Bangla, Kolaghat, West Bengal");
+}
+function updateCalendarLinks(){
+ const prefix=SIDE[selectedSide].names;
+ const ev={
+  welcome:{t:prefix+"'s Welcome & Check-in",d:"20270128",s:"103000",e:"113000"},
+  haldi:{t:prefix+"'s Haldi Carnival",d:"20270128",s:"130000",e:"140000"},
+  sangeet:{t:prefix+"'s Sangeet",d:"20270128",s:"183000",e:"193000"},
+  after:{t:prefix+"'s After Party",d:"20270128",s:"233000",e:"003000"},
+  mayra:{t:prefix+"'s Mayra",d:"20270129",s:"090000",e:"100000"},
+  wedding:{t:prefix+"'s Grand Wedding — Baraat & Korath, Varmala, Reception & Pheras",d:"20270129",e:"20270130",all:true}
+ };
+ document.querySelectorAll("[data-cal]").forEach(a=>{const e=ev[a.dataset.cal];if(e)a.href=calendarUrl(e.t,e.d,e.s,e.e,e.all);});
+}
+function showPanel(name,button){
+ activePanel=name;
+ document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.dataset.panel===name));
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.target===name));
+}
+function showDay(day,button){
+ document.querySelectorAll(".day-tab").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+ document.getElementById("day1").classList.toggle("active",day===1);
+ document.getElementById("day2").classList.toggle("active",day===2);
+}
+function toggleMusic(){
+ const audio=document.getElementById("bgMusic");
+ if(musicOn){audio.pause();musicOn=false;document.getElementById("audioToggle").textContent="♪";}
+ else{audio.play().then(()=>{musicOn=true;document.getElementById("audioToggle").textContent="♫";}).catch(()=>{});}
+}
+updateCountdown();setInterval(updateCountdown,1000);updateCalendarLinks();
+const splashVideo=document.querySelector("#splash video");
+splashVideo.addEventListener("loadeddata",()=>document.getElementById("splash").classList.add("video-ready"),{once:true});
+splashVideo.addEventListener("error",()=>{splashVideo.style.display="none";},{once:true});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){document.getElementById("bgMusic").pause();musicOn=false;document.getElementById("audioToggle").textContent="♪";}});
+</script>
+</body>
+</html>
