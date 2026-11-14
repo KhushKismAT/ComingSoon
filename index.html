@@ -45,10 +45,10 @@
 #invitation{background:var(--paper);display:none;flex-direction:column}
 #invitation.active{display:flex}
 .inv-top{flex:1;min-height:0;position:relative;overflow:hidden}
-.panel{position:absolute;inset:0;display:none;overflow:hidden;padding:calc(20px + env(safe-area-inset-top)) 23px 15px;animation:panelIn .45s ease both}
+.panel{position:absolute;inset:0;display:none;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:calc(20px + env(safe-area-inset-top)) 23px 15px;animation:panelIn .45s ease both}
 .panel.active{display:flex;flex-direction:column}
 @keyframes panelIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
-.panel-inner{width:min(100%,610px);margin:auto;min-height:0;max-height:100%;display:flex;flex-direction:column;justify-content:center}
+.panel-inner{width:min(100%,610px);margin:auto;min-height:min-content;max-height:none;display:flex;flex-direction:column;justify-content:center}
 .panel-kicker{text-align:center;font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--rose);margin-bottom:9px}
 .panel-title{text-align:center;font:normal clamp(29px,7vw,42px)/1.08 var(--serif);font-weight:400;margin:0 0 10px}
 .panel-sub{text-align:center;font:italic 14px/1.45 var(--serif);color:var(--muted);margin:0 auto 18px;max-width:370px}
@@ -291,11 +291,47 @@ html, body { width:100%; min-width:0; height:100%; min-height:100%; }
   box-shadow:0 -7px 24px #59483d12;
 }
 #invitation .nav-btn { min-height:54px; touch-action:manipulation; }
-#invitation .panel { overflow-y:auto; overscroll-behavior:contain; }
+#invitation .panel { overflow-y:auto; overscroll-behavior:contain; padding-bottom:28px; }
 @media (max-width:700px) {
   #invitation .inv-top { inset:0 0 calc(76px + env(safe-area-inset-bottom)) 0; }
   #invitation .bottom-nav { min-height:76px; }
 }
+
+
+/* Scrollable individual sections, pinned bottom controller */
+#invitation .panel {overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+#invitation .panel-inner {max-height:none;min-height:min-content;margin:0 auto;justify-content:flex-start;padding-top:clamp(18px,4vh,42px);padding-bottom:clamp(24px,5vh,50px)}
+#invitation .panel[data-panel="details"] .panel-inner {gap:12px}
+#invitation .bottom-nav {grid-template-columns:repeat(6,minmax(0,1fr));position:fixed!important;bottom:0;left:0;right:0;z-index:1000}
+#invitation .nav-btn {min-width:0;padding-left:0;padding-right:0}
+#invitation .nav-btn svg {width:24px;height:23px}
+#invitation .nav-btn span {font-size:clamp(7px,2.1vw,10px);letter-spacing:.04em;white-space:nowrap}
+.venue-carousel-shell {width:100%;overflow:hidden;position:relative;margin:10px auto 14px;mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
+.venue-track {display:flex;gap:10px;width:max-content;animation:venueMarquee 38s linear infinite}
+.venue-track:hover {animation-play-state:paused}
+.venue-track img {width:clamp(190px,58vw,310px);height:clamp(155px,35vh,250px);object-fit:cover;flex:none;border:1px solid #d1c2aa;cursor:zoom-in}
+.maps-photo-card {width:clamp(190px,58vw,310px);height:clamp(155px,35vh,250px);flex:none;display:grid;place-content:center;text-align:center;background:#e4d8c3;border:1px solid #cbb99e;color:#756653;text-decoration:none;font-size:12px;letter-spacing:.14em;line-height:2}
+.maps-photo-card span {font:italic 16px var(--serif);letter-spacing:.05em}
+@keyframes venueMarquee {from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.couple-collage {display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:clamp(82px,15vw,150px);gap:7px;width:100%;margin:8px auto 25px}
+.collage-tile {border:0;padding:0;background:#ded0b8;overflow:hidden;cursor:zoom-in;grid-column:span 2;position:relative}
+.collage-tile img {width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.collage-tile:active img {transform:scale(1.04)}
+.collage-tile.tile-1,.collage-tile.tile-5 {grid-column:span 3;grid-row:span 2}
+.collage-tile.tile-3 {grid-column:span 3}
+.wedding-script {font:italic clamp(19px,5vw,25px) var(--serif);letter-spacing:.12em;color:#8e6557;margin:10px 0 8px}
+.image-lightbox {position:fixed;inset:0;z-index:3000;background:#17130fee;display:none;align-items:center;justify-content:center;padding:24px 12px calc(24px + env(safe-area-inset-bottom))}
+.image-lightbox.open {display:flex}
+.image-lightbox img {max-width:100%;max-height:calc(100% - 50px);object-fit:contain;box-shadow:0 12px 60px #0008}
+.lightbox-close {position:absolute;top:calc(12px + env(safe-area-inset-top));right:15px;border:1px solid #ffffff77;border-radius:50%;width:44px;height:44px;background:#201b19aa;color:white;font-size:30px;line-height:1}
+.lightbox-maps-link {position:absolute;bottom:calc(15px + env(safe-area-inset-bottom));color:#fff4df;font-size:10px;letter-spacing:.13em;text-decoration:none;border-bottom:1px solid #fff5;padding-bottom:4px}
+@media(max-width:700px) {
+ .panel-inner {width:100%;padding-left:0;padding-right:0}
+ .details-content {max-width:none}
+ .couple-collage {grid-auto-rows:clamp(88px,24vw,150px);gap:6px}
+ #invitation .bottom-nav {min-height:76px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+}
+@media(prefers-reduced-motion:reduce){.venue-track{animation:none}}
 
 </style>
 </head>
@@ -347,9 +383,9 @@ html, body { width:100%; min-width:0; height:100%; min-height:100%; }
         </div>
         <div class="details-dates"><div><b>28</b><span>Thursday · Jan 2027</span></div><div><b>29</b><span>Friday · Jan 2027</span></div></div>
         <div class="memory-row">
-          <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264327/DSC00679_qwgwq3.jpg" alt="Roka memory">
-          <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264326/DSC00622_bf4xg2.jpg" alt="Roka memory">
-          <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264326/DSC00449_h6ptxq.jpg" alt="Roka ceremony">
+          <img data-lightbox src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264327/DSC00679_qwgwq3.jpg" alt="Roka memory">
+          <img data-lightbox src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264326/DSC00622_bf4xg2.jpg" alt="Roka memory">
+          <img data-lightbox src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1793264326/DSC00449_h6ptxq.jpg" alt="Roka ceremony">
         </div>
       </div>
     </section>
@@ -379,11 +415,19 @@ html, body { width:100%; min-width:0; height:100%; min-height:100%; }
         <div class="panel-kicker">A little style guide</div><h2 class="panel-title">Dress for the memories</h2>
         <p class="panel-sub">A palette for each celebration. Bring your own festive flair.</p>
         <div class="dress-grid">
-          <div class="dress-item"><div class="brush-swatches"><svg class="brush-swatch" style="width:144px" viewBox="0 0 146 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#eee5d2"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#e7d28e"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#d8b58c"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">Welcome</div><div class="dress-copy">Comfortables & Casuals<br>Your favourite airport look. Relax, refresh and settle in.</div></div>
-          <div class="dress-item"><div class="brush-swatches"><svg class="brush-swatch" style="width:144px" viewBox="0 0 146 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#eee5d2"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#e5ce83"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#c7a35e"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">Haldi Carnival</div><div class="dress-copy">Ivory / Butter Yellow<br>Breezy floral resort wear.</div></div>
-          <div class="dress-item"><div class="brush-swatches"><svg class="brush-swatch" style="width:144px" viewBox="0 0 146 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#b8797d"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#c6a0a2"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#b79a78"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">Sangeet</div><div class="dress-copy">Glitz & Glam<br>Indo-Western / Cocktail Formals.</div></div>
-          <div class="dress-item"><div class="brush-swatches"><svg class="brush-swatch" style="width:144px" viewBox="0 0 146 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#d59ba9"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#8e6d91"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#a85f76"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">Mayra</div><div class="dress-copy">Pink / Purple<br>Vibrant Rajasthani / Marwari traditional. Bandhani & Leheriya.</div></div>
-          <div class="dress-item wide"><div><div class="brush-swatches"><svg class="brush-swatch" style="width:192px" viewBox="0 0 194 30" aria-hidden="true"><path d="M2 19 Q7 4 21 8 Q38 5 43 13 Q34 23 10 24 Q1 25 2 19Z" fill="#a88c68"/><path d="M7 17 Q19 11 37 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M50 19 Q55 4 69 8 Q86 5 91 13 Q82 23 58 24 Q49 25 50 19Z" fill="#7d8066"/><path d="M55 17 Q67 11 85 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M98 19 Q103 4 117 8 Q134 5 139 13 Q130 23 106 24 Q97 25 98 19Z" fill="#9c5f59"/><path d="M103 17 Q115 11 133 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/><path d="M146 19 Q151 4 165 8 Q182 5 187 13 Q178 23 154 24 Q145 25 146 19Z" fill="#d0b58c"/><path d="M151 17 Q163 11 181 13" stroke="#fff8ec" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="dress-title">The Grand Wedding</div><div class="dress-copy">Royal & Regal · Royal Traditional / Regal Ethnic</div></div><div class="dress-quote">“Bring out your finest traditional attire. Let the day feel as grand as the occasion.”</div></div>
+          <div class="dress-item"><div class="dress-title">Haldi Carnival</div>
+            <div class="brush-swatches" aria-label="Ivory, beige and butter yellow">
+              <svg class="brush-swatch" style="width:108px" viewBox="0 0 110 34"><path d="M2 20Q7 4 25 8Q40 3 48 14Q40 27 10 27Q0 27 2 20Z" fill="#F4EBD9"/><path d="M5 18Q20 11 42 15" stroke="#fff" stroke-opacity=".55" stroke-width="1.5"/><path d="M57 20Q63 4 81 8Q97 3 104 14Q96 27 65 27Q55 27 57 20Z" fill="#D8C2A0"/><path d="M61 18Q76 11 98 15" stroke="#fff" stroke-opacity=".35" stroke-width="1.5"/></svg>
+            </div><div class="dress-copy">Ivory, beige & butter yellow. Breezy, sunlit festive wear.</div></div>
+          <div class="dress-item"><div class="dress-title">Sangeet</div>
+            <div class="brush-swatches" aria-label="Emerald green, navy blue, silver, gold and black">
+              <svg class="brush-swatch" style="width:100%;max-width:245px" viewBox="0 0 246 34"><path d="M2 20Q7 4 20 8Q34 4 39 14Q33 26 9 27Q0 27 2 20Z" fill="#08745A"/><path d="M43 20Q48 4 61 8Q75 4 80 14Q74 26 50 27Q41 27 43 20Z" fill="#172C53"/><path d="M84 20Q89 4 102 8Q116 4 121 14Q115 26 91 27Q82 27 84 20Z" fill="#BFC2C4"/><path d="M125 20Q130 4 143 8Q157 4 162 14Q156 26 132 27Q123 27 125 20Z" fill="#C7A34B"/><path d="M166 20Q171 4 184 8Q198 4 203 14Q197 26 173 27Q164 27 166 20Z" fill="#242322"/></svg>
+            </div><div class="dress-copy">Glitz & glam. Indo-Western / cocktail formals in jewel tones and evening classics.</div></div>
+          <div class="dress-item"><div class="dress-title">Mayra</div>
+            <div class="brush-swatches" aria-label="Bright pink, purple, green and yellow">
+              <svg class="brush-swatch" style="width:205px" viewBox="0 0 206 34"><path d="M2 20Q7 4 22 8Q37 4 43 14Q36 26 10 27Q0 27 2 20Z" fill="#F02F91"/><path d="M48 20Q53 4 68 8Q83 4 89 14Q82 26 56 27Q46 27 48 20Z" fill="#8A42B7"/><path d="M94 20Q99 4 114 8Q129 4 135 14Q128 26 102 27Q92 27 94 20Z" fill="#4D9A55"/><path d="M140 20Q145 4 160 8Q175 4 181 14Q174 26 148 27Q138 27 140 20Z" fill="#F2D32E"/></svg>
+            </div><div class="dress-copy">Bright colours & multi-colours. Think joyful, vibrant traditional looks.</div></div>
+          <div class="dress-item wide wedding-dress"><div><div class="dress-title">The Grand Wedding</div><div class="wedding-script">TRADITIONAL INDIAN WEAR</div><div class="dress-copy">Bring out your finest traditional attire. Celebrate in all the richness of Indian craftsmanship, textiles and festive detail.</div></div><div class="dress-quote">“A day for heirloom elegance, timeless silhouettes and a little royal splendour.”</div></div>
         </div>
       </div>
     </section>
@@ -392,22 +436,27 @@ html, body { width:100%; min-width:0; height:100%; min-height:100%; }
       <div class="panel-inner">
         <div class="panel-kicker">A little getaway</div><h2 class="panel-title">Meet us in Kolaghat</h2>
         <p class="panel-sub">A place for two families to come together.</p>
-        <div class="venue-gallery" aria-label="Hotel Sonar Bangla venue photographs">
-          <img src="https://assets.simplotel.com/simplotel/image/upload/x_461%2Cy_0%2Cw_3110%2Ch_2268%2Cr_0%2Cc_crop/q_80%2Cw_1600%2Cdpr_1%2Cf_auto%2Cfl_progressive%2Cc_limit/hotel-sonar-bangla-kolaghat/Hotel_Sonar_Bangla_Kolaghat_pool_4" alt="Hotel Sonar Bangla infinity pool and riverside grounds" loading="lazy">
-          <img src="https://assets.simplotel.com/simplotel/image/upload/w_5000%2Ch_2812/x_2%2Cy_0%2Cw_4996%2Ch_2812%2Cr_0%2Cc_crop/q_80%2Cw_1600%2Cdpr_1%2Cf_auto%2Cfl_progressive%2Cc_limit/hotel-sonar-bangla-kolaghat/Facade_of_Sonar_Bangla%2C_Kolaghat" alt="Hotel Sonar Bangla exterior" loading="lazy">
-          <img src="https://assets.simplotel.com/simplotel/image/upload/x_1%2Cy_0%2Cw_4030%2Ch_2268%2Cr_0%2Cc_crop/q_80%2Cw_1600%2Cdpr_1%2Cf_auto%2Cfl_progressive%2Cc_limit/hotel-sonar-bangla-kolaghat/Facade_of_Hotel_Sonar_Bangla%2C_Kolaghat_1" alt="Hotel Sonar Bangla entrance" loading="lazy">
+        <div class="venue-carousel-shell">
+          <div class="venue-track" id="venueTrack">
+            <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794667654/WhatsApp_Image_2026-11-13_at_7.37.58_PM_eqtilp.jpg" alt="Hotel Sonar Bangla property view" data-lightbox data-maps-search="Hotel Sonar Bangla Kolaghat">
+            <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794667653/WhatsApp_Image_2026-11-13_at_7.38.41_PM_1_f6foxo.jpg" alt="Hotel Sonar Bangla property photograph" data-lightbox data-maps-search="Hotel Sonar Bangla Kolaghat">
+            <img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794667655/WhatsApp_Image_2026-11-13_at_7.34.19_PM_sweykq.jpg" alt="Hotel Sonar Bangla property photograph" data-lightbox data-maps-search="Hotel Sonar Bangla Kolaghat">
+            <a class="maps-photo-card" href="https://www.google.com/maps/search/?api=1&query=Hotel+Sonar+Bangla+Kolaghat" target="_blank" rel="noopener">EXPLORE HOTEL PHOTOS<br><span>ON GOOGLE MAPS ↗</span></a>
+          </div>
         </div>
-        <div class="venue-credit">PHOTOGRAPHS · HOTEL SONAR BANGLA OFFICIAL GALLERY</div>
-        <svg class="venue-art" viewBox="0 0 390 160" fill="none" aria-label="Folk-art landscape">
-          <path d="M0 130Q90 102 190 126T390 119" stroke="#bba98e" stroke-width="2"/><path d="M0 142Q90 114 190 138T390 131" stroke="#bba98e"/>
-          <path d="M190 124V44m0 34-38-26m38 8 38-30" stroke="#96755f" stroke-width="3"/>
-          <g fill="#aeb19a" stroke="#81896f"><path d="M190 45c-19-14-17-29 0-34 17 8 16 23 0 34Zm-33 9c-19-3-24-17-12-27 17 1 22 12 12 27Zm64-24c-1-17 11-26 24-17 1 15-9 23-24 17Z"/></g>
-          <path d="M65 127c5-22 22-32 40-24 14 6 17 19 13 29H67Z" fill="#b99b82" stroke="#876d59"/><path d="M112 110c14-8 21 0 17 11-2 5-7 8-12 11" stroke="#876d59" stroke-width="5" stroke-linecap="round"/>
-          <g fill="#b8797d"><circle cx="28" cy="126" r="4"/><circle cx="37" cy="119" r="4"/><circle cx="46" cy="126" r="4"/><circle cx="300" cy="126" r="4"/><circle cx="309" cy="119" r="4"/><circle cx="318" cy="126" r="4"/></g>
-        </svg>
+        <div class="venue-credit">PROPERTY PHOTOGRAPHS · HOTEL SONAR BANGLA</div>
         <div class="venue-name">Hotel Sonar Bangla</div>
         <div class="venue-address">Kolaghat, West Bengal<br>28–29 January 2027</div>
-        <a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=Hotel+Sonar+Bangla+Kolaghat" target="_blank" rel="noopener">Open map directions ↗</a>
+        <a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=Hotel+Sonar+Bangla+Kolaghat" target="_blank" rel="noopener">Open Google Maps ↗</a>
+      </div>
+    </section>
+
+    <section class="panel" data-panel="gallery">
+      <div class="panel-inner gallery-inner">
+        <div class="panel-kicker">A collection of little forever moments</div>
+        <h2 class="panel-title">Us, in frames</h2>
+        <p class="panel-sub">A few glimpses into our little world.</p>
+        <div class="couple-collage"><button class="collage-tile tile-1" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668037/_FFS6876_frwggi.jpg" aria-label="Open couple photograph 1"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668037/_FFS6876_frwggi.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-2" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668037/_FFS6924_tgctcs.jpg" aria-label="Open couple photograph 2"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668037/_FFS6924_tgctcs.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-3" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668037/_FFS6906_opa2zp.jpg" aria-label="Open couple photograph 3"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668037/_FFS6906_opa2zp.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-4" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668037/_FFS6930_lrgt3x.jpg" aria-label="Open couple photograph 4"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668037/_FFS6930_lrgt3x.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-5" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6957_afrk0b.jpg" aria-label="Open couple photograph 5"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6957_afrk0b.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-6" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6882_xkbslv.jpg" aria-label="Open couple photograph 6"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6882_xkbslv.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-7" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6932_ieimcb.jpg" aria-label="Open couple photograph 7"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6932_ieimcb.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-1" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6894_hppaay.jpg" aria-label="Open couple photograph 8"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6894_hppaay.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-2" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6916_odnz7l.jpg" aria-label="Open couple photograph 9"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668038/_FFS6916_odnz7l.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-3" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668039/_FFS6964_khjoes.jpg" aria-label="Open couple photograph 10"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668039/_FFS6964_khjoes.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-4" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668039/_FFS6874_i3fojc.jpg" aria-label="Open couple photograph 11"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668039/_FFS6874_i3fojc.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-5" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668039/_FFS6977_odmsuw.jpg" aria-label="Open couple photograph 12"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668039/_FFS6977_odmsuw.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-6" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668039/_FFS6902_fzvofl.jpg" aria-label="Open couple photograph 13"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668039/_FFS6902_fzvofl.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-7" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668040/_FFS6992_gtbcxt.jpg" aria-label="Open couple photograph 14"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668040/_FFS6992_gtbcxt.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button><button class="collage-tile tile-1" type="button" data-open-image="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668042/_FFS6911_yghhl9.jpg" aria-label="Open couple photograph 15"><img src="https://res.cloudinary.com/dstoe6rmq/image/upload/v1794668042/_FFS6911_yghhl9.jpg" alt="Akshat and Khushi couple photograph" loading="lazy"></button></div>
       </div>
     </section>
 
@@ -428,12 +477,18 @@ html, body { width:100%; min-width:0; height:100%; min-height:100%; }
   <nav class="bottom-nav" aria-label="Invitation sections">
     <button class="nav-btn active" data-target="details" onclick="showPanel('details',this)"><svg viewBox="0 0 24 24"><path d="M12 2 14 9l7 3-7 3-2 7-2-7-7-3 7-3 2-7Z"/></svg><span>Details</span></button>
     <button class="nav-btn" data-target="events" onclick="showPanel('events',this)"><svg viewBox="0 0 24 24"><path d="M12 21V11m0 0C4 11 4 4 4 4s8-1 8 7Zm0 2c8 0 8-7 8-7s-8-1-8 7Z"/></svg><span>Events</span></button>
-    <button class="nav-btn" data-target="dress" onclick="showPanel('dress',this)"><svg viewBox="0 0 24 24"><path d="M8 4 12 2l4 2 4 5-4 2-1-2v12H9V9l-1 2-4-2 4-5Z"/></svg><span>Dress code</span></button>
+    <button class="nav-btn" data-target="dress" onclick="showPanel('dress',this)"><svg viewBox="0 0 24 24"><path d="M8 4 12 2l4 2 4 5-4 2-1-2v12H9V9l-1 2-4-2 4-5Z"/></svg><span>Dress</span></button>
     <button class="nav-btn" data-target="venue" onclick="showPanel('venue',this)"><svg viewBox="0 0 24 24"><path d="M12 22s7-7 7-13a7 7 0 1 0-14 0c0 6 7 13 7 13Z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Venue</span></button>
+    <button class="nav-btn" data-target="gallery" onclick="showPanel('gallery',this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Gallery</span></button>
     <button class="nav-btn" data-target="rsvp" onclick="showPanel('rsvp',this)"><svg viewBox="0 0 24 24"><path d="M20.8 8.8c0 5-8.8 11-8.8 11s-8.8-6-8.8-11A4.8 4.8 0 0 1 12 6a4.8 4.8 0 0 1 8.8 2.8Z"/></svg><span>RSVP</span></button>
   </nav>
 </section>
 
+<div id="imageLightbox" class="image-lightbox" aria-hidden="true">
+  <button class="lightbox-close" type="button" aria-label="Close image" onclick="closeLightbox()">×</button>
+  <img id="lightboxImage" alt="Expanded photograph">
+  <a id="lightboxMapsLink" class="lightbox-maps-link" href="#" target="_blank" rel="noopener" hidden>OPEN ORIGINAL ON GOOGLE MAPS ↗</a>
+</div>
 <audio id="bgMusic" src="./BG.mp3" preload="auto" loop></audio>
 <script>
 const WEDDING_DATE=new Date(2027,0,28,0,0,0);
@@ -504,6 +559,8 @@ function updateCalendarLinks(){
  document.querySelectorAll("[data-cal]").forEach(a=>{const e=ev[a.dataset.cal];if(e)a.href=calendarUrl(e.t,e.d,e.s,e.e,e.all);});
 }
 function showPanel(name,button){
+ const previous=document.querySelector('.panel.active');
+ if(previous && previous.dataset.panel!==name) previous.scrollTop=0;
  activePanel=name;
  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.dataset.panel===name));
  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.target===name));
@@ -520,6 +577,32 @@ function toggleMusic(){
  else{audio.play().then(()=>{musicOn=true;document.getElementById("audioToggle").textContent="♫";}).catch(()=>{});}
 }
 updateCountdown();setInterval(updateCountdown,1000);updateCalendarLinks();
+
+// Duplicate the venue strip once for a seamless, continuous carousel.
+const venueTrack=document.getElementById("venueTrack");
+if(venueTrack){venueTrack.innerHTML+=venueTrack.innerHTML;}
+function openLightbox(src, mapsUrl=""){
+ const box=document.getElementById("imageLightbox");
+ document.getElementById("lightboxImage").src=src;
+ const link=document.getElementById("lightboxMapsLink");
+ if(mapsUrl){link.href=mapsUrl;link.hidden=false;}else{link.hidden=true;link.removeAttribute("href");}
+ box.classList.add("open");box.setAttribute("aria-hidden","false");
+}
+function closeLightbox(){
+ const box=document.getElementById("imageLightbox");
+ box.classList.remove("open");box.setAttribute("aria-hidden","true");
+ document.getElementById("lightboxImage").src="";
+}
+document.addEventListener("click",e=>{
+ const img=e.target.closest("img[data-lightbox]");
+ const tile=e.target.closest("[data-open-image]");
+ if(img){
+  const maps=img.dataset.mapsSearch?"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(img.dataset.mapsSearch):"";
+  openLightbox(img.currentSrc||img.src,maps);
+ }else if(tile){openLightbox(tile.dataset.openImage);}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox();});
+
 const splashVideo=document.querySelector("#splash video");
 splashVideo.addEventListener("loadeddata",()=>document.getElementById("splash").classList.add("video-ready"),{once:true});
 splashVideo.addEventListener("error",()=>{splashVideo.style.display="none";},{once:true});
